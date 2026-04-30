@@ -99,7 +99,6 @@ export function emailDejaUtilise(email, idExclu = null) {
     const emails = getEmailsExistants(idExclu);
     return emails.has(email.toLowerCase());
 }
-
 // AFFICHER TOUS LES ÉTUDIANTS
 
 export function afficherInscriptions(liste = etudiants) {
@@ -145,3 +144,66 @@ export function renderPagination(total, totalPages, paginationEl, renderList) {
     next.addEventListener("click", () => { currentPage++; renderList(); });
     paginationEl.appendChild(next);
 }
+
+// CRÉER UNE LIGNE <tr>
+export function ajouterInscription(etudiant) {
+    const ligne = document.createElement("tr");
+    ligne.classList.add("tr");
+    ligne.dataset.id = etudiant.id;
+
+    ligne.innerHTML = `
+        <td class="px-4 py-3 text-white font-medium max-w-[100px] truncate">${etudiant.nom}</td>
+        <td class="px-4 py-3 text-white max-w-[100px] truncate">${etudiant.prenom}</td>
+        <td class="px-4 py-3 text-white max-w-[160px] truncate">${etudiant.email}</td>
+        <td class="px-4 py-3 text-white max-w-[120px] truncate">${etudiant.adresse}</td>
+        <td class="px-4 py-3 text-white whitespace-nowrap">${etudiant.telephone}</td>
+        <td class="px-4 py-3 text-white whitespace-nowrap">${etudiant.formation}</td>
+        <td class="px-4 py-3 text-white whitespace-nowrap">${etudiant.date}</td>
+        <td class="px-4 py-3 whitespace-nowrap">
+          <div class="flex items-center gap-3">
+            <button class="btnModifier text-[#7b82c4] hover:opacity-70 transition-opacity text-sm" title="Modifier">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="btnArchiver text-red-400 hover:opacity-70 transition-opacity text-sm" title="Archiver">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </td>
+    `;
+    return ligne;
+}
+// SOUMISSION FORMULAIRE AJOUT
+Dom.formAjouter.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (verifierChamps() && validationEmail() && validationTelephone()) {
+
+        // ── Récupération de l'email saisi AVANT la vérification doublon
+        const emailSaisi = Dom.addEmail.value.trim();
+
+        if (emailDejaUtilise(emailSaisi)) {
+            Dom.errAddEmail.textContent = "Cet email est déjà utilisé";
+            Dom.errAddEmail.style.color = "red";
+            return;
+        }
+
+        const newEtudiant = {
+            id: Date.now(),
+            nom: Dom.addNom.value.trim(),
+            prenom: Dom.addPrenom.value.trim(),
+            email: emailSaisi,
+            adresse: Dom.addAdresse.value.trim(),
+            telephone: Dom.addTelephone.value.trim(),
+            formation: Dom.addFormation.value,
+            date: dateFormater()
+        };
+
+        etudiants.push(newEtudiant);
+        saveInscriptions(etudiants);
+        fermerModal(Dom.modalAjouter);
+
+        afficherInscriptions();
+        Dom.formAjouter.reset();
+        showToast("success", "Succès", "Étudiant ajouté avec succès !");
+    }
+});
