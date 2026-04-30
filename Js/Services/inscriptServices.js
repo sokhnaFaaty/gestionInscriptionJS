@@ -114,3 +114,34 @@ export function afficherInscriptions(liste = etudiants) {
     const paginationEl = document.getElementById("pagination");
     if (paginationEl) renderPagination(liste.length, totalPages, paginationEl, afficherInscriptions);
 }
+
+// PAGINATION
+const PER_PAGE = 6;
+let currentPage = 1;
+
+export function renderPagination(total, totalPages, paginationEl, renderList) {
+    paginationEl.innerHTML = "";
+    if (total <= PER_PAGE) return;
+
+    const prev = document.createElement("button");
+    prev.className = "page-btn";
+    prev.textContent = "←";
+    prev.disabled = currentPage === 1;
+    prev.addEventListener("click", () => { currentPage--; renderList(); });
+    paginationEl.appendChild(prev);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.className = "page-btn" + (i === currentPage ? " active" : "");
+        btn.textContent = i;
+        btn.addEventListener("click", () => { currentPage = i; renderList(); });
+        paginationEl.appendChild(btn);
+    }
+
+    const next = document.createElement("button");
+    next.className = "page-btn";
+    next.textContent = "→";
+    next.disabled = currentPage === totalPages;
+    next.addEventListener("click", () => { currentPage++; renderList(); });
+    paginationEl.appendChild(next);
+}
