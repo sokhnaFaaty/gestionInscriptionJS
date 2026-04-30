@@ -1,4 +1,10 @@
 import * as Dom from "../Dom/element.js";
+import{
+     supprimerEtudiant, 
+    restaurerEtudiant, 
+    modifierEtudiant, 
+    emailDejaUtilise
+} from "../Services/inscriptServices.js"
 import { showToast } from "./messageRenderer.js";
 
 
