@@ -220,3 +220,18 @@ export function modifierEtudiant(id, donneesModifiees) {
     saveInscriptions(etudiants);
     afficherInscriptions();
 }
+
+// ARCHIVER UN ÉTUDIANT
+export function supprimerEtudiant(id) {
+    const etudiant = etudiants.find(e => e.id === id);
+    if (!etudiant) return;
+
+    // Sauvegarder dans les archives
+    const archives = JSON.parse(localStorage.getItem("archives")) || [];
+    archives.push(etudiant);
+    localStorage.setItem("archives", JSON.stringify(archives));
+
+    etudiants = etudiants.filter(e => e.id !== id);
+    saveInscriptions(etudiants);
+    afficherInscriptions();
+}
