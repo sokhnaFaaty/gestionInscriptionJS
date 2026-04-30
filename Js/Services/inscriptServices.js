@@ -100,6 +100,22 @@ export function emailDejaUtilise(email, idExclu = null) {
     return emails.has(email.toLowerCase());
 }
 
+
+// GESTION DES DOUBLONS AVEC SET
+export function getTelephonesExistants(idExclu = null) {
+    return new Set(
+        etudiants
+            .filter(e => e.id !== idExclu)
+            .map(e => e.telephone.toLowerCase())
+    );
+}
+
+export function telephoneDejaUtilise(telephone, idExclu = null) {
+    const telephones = getTelephonesExistants(idExclu);
+    return telephones.has(telephone.toLowerCase());
+}
+
+
 // AFFICHER TOUS LES ÉTUDIANTS
 
 export function afficherInscriptions(liste = etudiants) {
@@ -178,8 +194,9 @@ Dom.formAjouter.addEventListener("submit", function (e) {
 
     if (verifierChamps() && validationEmail() && validationTelephone()) {
 
-        // ── Récupération de l'email saisi AVANT la vérification doublon
+        // ── Récupération de l'email et du telephone saisi AVANT la vérification doublon
         const emailSaisi = Dom.addEmail.value.trim();
+        const telephoneSaisi= Dom.addTelephone.value.trim();
 
         if (emailDejaUtilise(emailSaisi)) {
             Dom.errAddEmail.textContent = "Cet email est déjà utilisé";
@@ -187,10 +204,16 @@ Dom.formAjouter.addEventListener("submit", function (e) {
             return;
         }
 
+         if (telephoneDejaUtilise(telephoneSaisi)) {
+            Dom.errAddTelephone.textContent = "Cet numero est déjà utilisé";
+            Dom.errAddTelephone.style.color = "red";
+            return;
+        }
+
         const newEtudiant = {
             id: Date.now(),
             nom: Dom.addNom.value.trim(),
-            prenom: Dom.addPrenom.value.trim(),
+            prenom: telephoneSaisi,
             email: emailSaisi,
             adresse: Dom.addAdresse.value.trim(),
             telephone: Dom.addTelephone.value.trim(),

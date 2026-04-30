@@ -3,7 +3,8 @@ import{
      supprimerEtudiant, 
     restaurerEtudiant, 
     modifierEtudiant, 
-    emailDejaUtilise
+    emailDejaUtilise,
+    telephoneDejaUtilise
 } from "../Services/inscriptServices.js"
 import { showToast } from "./messageRenderer.js";
 
