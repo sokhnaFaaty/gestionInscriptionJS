@@ -11,7 +11,7 @@ let etudiants = getInscriptions();
 //rechercher
 function getFiltered() {
     const inscriptions = getInscriptions();
-    const q = Dom.searchInput.value.toLowerCase().trim(); // Ajoutez .value ici !
+    const q = Dom.searchInput.value.toLowerCase().trim(); 
 
     if (!q) return inscriptions;
 

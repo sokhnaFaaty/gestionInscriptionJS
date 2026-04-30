@@ -1,5 +1,4 @@
 import * as Dom from "../Dom/elements.js";
-import { emailDejaUtilise, modifierEtudiant, supprimerEtudiant, restaurerEtudiant } from "../Services/inscriptServices.js";
 import { showToast } from "./messageRenderer.js";
 
 
@@ -102,7 +101,7 @@ archives.forEach(e => {
             afficherArchives();//rafraichr drawer bi
            showToast("success", "Restauré", "L'étudiant a été restauré avec succès !");
     }
-    if(e.target.classlist.contains("checkArchive")){
+    if(e.target.classList.contains("checkArchive")){
         const checked=Dom.archivedListContainer.querySelectorAll(".checkArchive:checked").length;
         document.getElementById("btnRestaurerGroupe").disabled=checked<3;
     }
