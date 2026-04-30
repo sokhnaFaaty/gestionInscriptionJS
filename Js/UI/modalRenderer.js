@@ -209,3 +209,17 @@ modalsAvecBoutons.forEach(function ({ modal, selecteur }) {
         if (e.target === modal) fermerModal(modal);
     });
 });
+
+//sidebar
+export function openSidebar() {
+    document.getElementById("sidebar").classList.remove("-translate-x-full");
+    document.getElementById("sidebarOverlay").classList.remove("hidden");
+}
+
+export function closeSidebar() {
+    document.getElementById("sidebar").classList.add("-translate-x-full");
+    document.getElementById("sidebarOverlay").classList.add("hidden");
+}
+
+document.getElementById("btnBurger").addEventListener("click", openSidebar);
+document.getElementById("sidebarOverlay").addEventListener("click", closeSidebar);
