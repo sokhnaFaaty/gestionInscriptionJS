@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ecole 221 - Liste des Inscriptions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sidebar: '#1F1C38',
+            topbar:  '#8D8E96',
+            navyNum: '#4a4e6e',
+            thead:   '#2e3354',
+          },
+          fontFamily: { sans: ['Segoe UI', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#f0f2f5] flex min-h-screen font-sans overflow-x-hidden">
+
+<!-- Toast container -->
+<div id="toastContainer" class="fixed top-4 right-4 z-[100] flex flex-col gap-2"></div>
+
+<!-- Overlay sidebar mobile -->
+<div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside id="sidebar"
+  class="sidebar-scroll w-[200px] min-w-[200px] bg-sidebar flex flex-col h-screen overflow-y-auto
+         fixed top-0 left-0 z-50 -translate-x-full transition-transform duration-300
+         md:sticky md:translate-x-0 md:z-auto">
+  <div class="px-5 pt-7 pb-3 text-center">
+    <h2 class="text-white text-xl font-bold tracking-wide">ECOLE 221</h2>
+    <p class="text-[#8a90a8] text-[10px] uppercase tracking-[2px] mt-0.5">Administration</p>
+  </div>
+  <div class="h-0.5 bg-white/20 mx-5 mb-[18px] mt-2.5"></div>
+  <nav class="flex-1 flex flex-col gap-0.5 px-2.5">
+    <a href="#"
+       class="flex items-center gap-3 px-3.5 py-[11px] text-[#b0b5cc] text-sm rounded-md hover:bg-white/10 hover:text-white transition-all">
+      <i class="fa-solid fa-table-cells-large w-[18px] text-center text-[15px] flex-shrink-0"></i>
+      Tableau de bord
+    </a>
+    <a href="#"
+       class="flex items-center gap-3 px-3.5 py-[11px] text-sidebar bg-white text-sm rounded-md font-medium">
+      <i class="fa-solid fa-users w-[18px] text-center text-[15px] flex-shrink-0"></i>
+      Liste des étudiants
+    </a>
+  </nav>
+</aside>
+
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="flex-1 flex flex-col min-h-screen overflow-x-hidden">
+
+  <!-- Topbar -->
+  <header class="bg-topbar px-4 md:px-8 py-3 md:py-[18px] flex justify-between items-center gap-3">
+
+    <!-- Burger — visible uniquement sur mobile -->
+    <button id="btnBurger"
+      class="md:hidden text-white text-xl flex-shrink-0 w-8 h-8 flex items-center justify-center">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <h1 class="text-white text-[16px] md:text-[22px] font-bold tracking-[1px] md:tracking-[2px] uppercase flex-1 truncate">
+      Liste des Inscriptions
+    </h1>
+    <span class="text-[#d0d3e8] text-[11px] md:text-[13px] hidden sm:block whitespace-nowrap">
+      Bienvenue <strong class="text-white">Administrateur !</strong>
+    </span>
+  </header>
+
+  <!-- Content -->
+  <div class="p-3 sm:p-5 md:p-7 flex-1">
+
+    <!-- Header actions -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5 bg-sidebar px-4 md:px-6 py-4 rounded-[8px]">
+      <h2 class="text-[14px] md:text-[16px] font-bold text-white">Gestion Inscriptions</h2>
+      <div class="flex gap-2 sm:gap-3 w-full sm:w-auto">
+        <button id="btnRestore"
+           class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 md:px-4 py-[8px] border-[1.5px] border-white/70 text-white text-[12px] md:text-[13px] font-semibold rounded-md hover:bg-white/20 transition-all">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span class="hidden xs:inline sm:inline">Restaurer</span>
+        </button>
+        <button id="btnAddStudent"
+           class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 md:px-4 py-[8px] border-[1.5px] border-white/70 text-white text-[12px] md:text-[13px] font-semibold rounded-md hover:bg-white/20 transition-all">
+          <i class="fa-solid fa-plus"></i>
+          <span class="hidden sm:inline">Ajouter un etudiant</span>
+          <span class="sm:hidden">Ajouter</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table card -->
+    <div class="bg-white rounded-[10px] p-3 sm:p-5">
+
+      <!-- Recherche -->
+      <div class="flex gap-4 mb-5 flex-wrap items-center">
+        <div class="relative flex-1 min-w-[140px] max-w-full sm:max-w-[240px]">
+          <input id="searchInput" type="text" placeholder="Recherchez ici"
+            class="w-full text-sm border border-[#ccc] rounded-md px-3 py-2 pl-9 bg-white text-[#333] placeholder-[#999] focus:outline-none focus:border-sidebar"/>
+          <i class="fa-solid fa-magnifying-glass text-[#555] text-[12px] absolute left-3 top-1/2 -translate-y-1/2"></i>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="w-full overflow-x-auto rounded-lg border border-[#555]">
+        <table id="studentsTable" class="w-full min-w-[750px] table-fixed text-sm border-collapse">
+          <thead>
+            <tr class="bg-[#8D8E96]">
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[100px]">Nom</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[100px]">Prenom</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[160px]">Email</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[110px]">Adresse</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[110px]">Telephone</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[130px]">Formation</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[100px]">Date</th>
+              <th class="px-4 py-3 text-left text-white font-semibold text-[13px] w-[80px]">Action</th>
+            </tr>
+          </thead>
+          <tbody id="studentsTableBody">
+          
+          </tbody>
+        </table>
+      
+      </div>
+      <div id="pagination"></div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- 
+     MODAL AJOUTER
+ -->
+<div id="modal-ajouter" class="modal-overlay hidden">
+  <form id="formAjouter" class="bg-white rounded-[10px] w-full max-w-[500px] shadow-2xl overflow-hidden">
+    <div class="bg-sidebar px-6 py-4 flex justify-between items-center">
+      <h3 class="text-white text-[15px] font-bold">Ajouter un etudiant</h3>
+      <button type="button" class="btnFermer text-white text-xl leading-none hover:opacity-70"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Nom :</label>
+          <input id="addNom" type="text" placeholder="Entrez le nom de l'etudiant"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errAddNom" class="err"></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Prenom :</label>
+          <input id="addPrenom" type="text" placeholder="Entrez le prenom de l'etudiant"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errAddPrenom" class="err"></span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1 mb-3">
+        <label class="text-[13px] font-semibold text-sidebar">Email :</label>
+        <input id="addEmail" type="email" placeholder="Entrez l'adresse email"
+          class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all w-full"/>
+        <span id="errAddEmail" class="err"></span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Adresse :</label>
+          <input id="addAdresse" type="text" placeholder="Entrez l'adresse de l'etudiant"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="erraddAdresse" class="err"></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Telephone :</label>
+          <input id="addTelephone" type="text" placeholder="Entrez le telephone"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errAddTelephone" class="err"></span>
+        </div>
+      </div>
+
+        <div class="flex flex-col gap-1 mb-3">
+          <label class="text-[13px] font-semibold text-sidebar">Formation :</label>
+          <div class="relative">
+            <select id="addFormation" class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar w-full appearance-none">
+              <option value="">--Selectionner--</option>
+              <option>Data Science</option>
+              <option>Genie Logicielle</option>
+              <option>BTS Reseau</option>
+              <option>Marketing Digital</option>
+              <option>Developpement Web</option>
+            </select>
+          <span id="errAddFormation" class="err"></span>
+          </div>
+        </div>
+    </div>
+    <div class="grid grid-cols-2 gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
+      <button type="button" class="btnFermer py-3 bg-[#8a90a8] text-white text-sm font-semibold rounded-md hover:opacity-85 transition-opacity">Annuler</button>
+      <button id="submitAddBtn" type="submit" class="py-3 bg-sidebar text-white text-sm font-bold rounded-md hover:opacity-85 transition-opacity">Ajouter</button>
+    </div>
+  </form>
+</div>
+
+
+<!-- 
+     MODAL MODIFIER 
+ -->
+<div id="modal-modifier" class="modal-overlay hidden">
+  <form id="formModifier" class="bg-white rounded-[10px] w-full max-w-[500px] shadow-2xl overflow-hidden">
+    <div class="bg-sidebar px-6 py-4 flex justify-between items-center">
+      <h3 class="text-white text-[15px] font-bold">Modifier un etudiant</h3>
+      <button type="button" class="btnFermer text-white text-xl leading-none hover:opacity-70"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Nom :</label>
+          <input id="editNom" type="text" placeholder="Nom"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errEditNom" class="err"></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Prenom :</label>
+          <input id="editPrenom" type="text" placeholder="Prenom"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errEditPrenom" class="err"></span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1 mb-3">
+        <label class="text-[13px] font-semibold text-sidebar">Email :</label>
+        <input id="editEmail" type="email" placeholder="Email"
+          class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all w-full"/>
+        <span id="errEditEmail" class="err"></span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Adresse :</label>
+          <input id="editAdresse" type="text" placeholder="Adresse"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errEditAdresse" class="err"></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[13px] font-semibold text-sidebar">Telephone :</label>
+          <input id="editTelephone" type="text" placeholder="Telephone"
+            class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar focus:bg-white transition-all"/>
+          <span id="errEditTelephone" class="err"></span>
+        </div>
+      </div>
+     
+        <div class="flex flex-col gap-1 mb-3">
+          <label class="text-[13px] font-semibold text-sidebar">Formation :</label>
+          <div class="relative">
+            <select id="editFormation" class="px-3 py-2.5 border border-[#d0d3e0] rounded-md text-sm bg-[#f7f8fc] focus:outline-none focus:border-sidebar w-full appearance-none">
+              <option value="">--Selectionner--</option>
+              <option>Data Science</option>
+              <option>Genie Logicielle</option>
+              <option>BTS Reseau</option>
+              <option>Marketing Digital</option>
+              <option>Developpement Web</option>
+            </select>
+            <span id="errEditFormation" class="err"></span>
+          </div>
+        </div>
+        
+    </div>
+    <div class="grid grid-cols-2 gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
+      <button type="button" class="btnFermer py-3 bg-[#8a90a8] text-white text-sm font-semibold rounded-md hover:opacity-85 transition-opacity">Annuler</button>
+      <button id="submitEditBtn" type="submit" class="py-3 bg-sidebar text-white text-sm font-bold rounded-md hover:opacity-85 transition-opacity">Modifier</button>
+    </div>
+  </form>
+</div>
+
+
+<!-- 
+     MODAL SUPPRIMER (générique, rempli en JS)
+ -->
+<div id="modal-supprimer" class="modal-overlay hidden">
+  <div class="bg-white rounded-[10px] w-full max-w-[420px] shadow-2xl overflow-hidden">
+    <div class="bg-sidebar px-6 py-4 flex justify-between items-center">
+      <h3 class="text-white text-[15px] font-bold">Confirmation de suppression</h3>
+      <button type="button" class="btnFermer text-white text-xl leading-none hover:opacity-70"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="px-5 sm:px-8 py-5 sm:py-7 text-center">
+      <div class="text-red-500 text-5xl mb-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <p class="text-[#333] text-sm leading-relaxed">
+        Etes vous sur de vouloir archiver l'etudiant<br/>
+        <strong id="deleteStudentName" class="text-sidebar font-bold text-[15px]"></strong>
+      </p>
+      <p class="text-[11px] text-[#b8860b] mt-3 bg-[#fffbe6] border border-[#f5e08a] rounded-md px-3 py-2">
+        <i class="fa-solid fa-info-circle mr-1"></i>L'étudiant sera archivé et pourra être restauré.
+      </p>
+    </div>
+    <div class="grid grid-cols-2 gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
+      <button type="button" class="btnFermer py-3 bg-sidebar text-white text-sm font-bold rounded-md hover:opacity-85 transition-opacity">NON</button>
+      <button id="confirmDeleteBtn" type="button" class="py-3 bg-red-500 text-white text-sm font-bold rounded-md hover:opacity-85 transition-opacity">OUI, Archiver</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- 
+     DRAWER RESTAURER
+ -->
+<div id="drawer-restaurer" class="drawer-overlay hidden">
+  <button type="button" class="btnFermer absolute inset-0 block bg-transparent border-none cursor-default"></button>
+  <div class="drawer-panel">
+    <!-- Header -->
+    <div class="bg-[#2a2750] px-6 py-4 flex justify-between items-center flex-shrink-0">
+      <div>
+        <h3 class="text-white font-bold text-[15px] flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-[#f5e08a]"></i> Etudiants Archivés
+        </h3>
+        <p class="text-[#8a90a8] text-[11px] mt-0.5">Cliquez Restaurer pour réactiver un étudiant</p>
+      </div>
+      <button type="button" class="btnFermer text-white text-xl leading-none hover:opacity-70"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <!-- LISTE DES ARCHIVes -->
+    <div id="archivedListContainer" class="flex-1 overflow-y-auto p-4 bg-[#1a1836]"></div>
+    <!-- Footer : Restaurer tout -->
+    <div class="flex-shrink-0 px-4 py-3 bg-[#2a2750] border-t border-white/10">
+      <button id="btnRestaurerGroupe" type="button"
+        class="w-full py-2.5 bg-green-500 text-white text-sm font-semibold rounded-md hover:bg-green-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+        <i class="fa-solid fa-rotate-left mr-2"></i>Restaurer plusieurs
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
