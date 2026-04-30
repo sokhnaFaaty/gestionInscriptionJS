@@ -235,3 +235,18 @@ export function supprimerEtudiant(id) {
     saveInscriptions(etudiants);
     afficherInscriptions();
 }
+
+// RESTAURER UN ÉTUDIANT
+export function restaurerEtudiant(id) {
+    let archives = JSON.parse(localStorage.getItem("archives")) || [];
+    const etudiant = archives.find(et => et.id === id);
+    if (!etudiant) return;
+
+    etudiants.push(etudiant);
+    saveInscriptions(etudiants);
+
+    archives = archives.filter(et => et.id !== id);
+    localStorage.setItem("archives", JSON.stringify(archives));
+
+    afficherInscriptions();
+}
