@@ -208,3 +208,15 @@ Dom.formAjouter.addEventListener("submit", function (e) {
     }
 });
 
+
+// MODIFIER UN ÉTUDIANT
+export function modifierEtudiant(id, donneesModifiees) {
+    etudiants = etudiants.map(function (et) {
+        if (et.id === id) {
+            return { ...et, ...donneesModifiees };
+        }
+        return et;
+    });
+    saveInscriptions(etudiants);
+    afficherInscriptions();
+}
