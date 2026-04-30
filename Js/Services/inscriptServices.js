@@ -99,6 +99,20 @@ export function emailDejaUtilise(email, idExclu = null) {
     const emails = getEmailsExistants(idExclu);
     return emails.has(email.toLowerCase());
 }
+// AFFICHER TOUS LES ÉTUDIANTS
+
+export function afficherInscriptions(liste = etudiants) {
+    const PER_PAGE = 6;
+    const totalPages = Math.ceil(liste.length / PER_PAGE);
+    const debut = (currentPage - 1) * PER_PAGE;
+    const page = liste.slice(debut, debut + PER_PAGE);
+
+    Dom.studentsTableBody.innerHTML = "";
+    page.forEach(et => Dom.studentsTableBody.appendChild(ajouterInscription(et)));
+
+    const paginationEl = document.getElementById("pagination");
+    if (paginationEl) renderPagination(liste.length, totalPages, paginationEl, afficherInscriptions);
+}
 
 // CRÉER UNE LIGNE <tr>
 export function ajouterInscription(etudiant) {
@@ -162,3 +176,35 @@ Dom.formAjouter.addEventListener("submit", function (e) {
         showToast("success", "Succès", "Étudiant ajouté avec succès !");
     }
 });
+
+
+// PAGINATION
+const PER_PAGE = 6;
+let currentPage = 1;
+
+export function renderPagination(total, totalPages, paginationEl, renderList) {
+    paginationEl.innerHTML = "";
+    if (total <= PER_PAGE) return;
+
+    const prev = document.createElement("button");
+    prev.className = "page-btn";
+    prev.textContent = "←";
+    prev.disabled = currentPage === 1;
+    prev.addEventListener("click", () => { currentPage--; renderList(); });
+    paginationEl.appendChild(prev);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.className = "page-btn" + (i === currentPage ? " active" : "");
+        btn.textContent = i;
+        btn.addEventListener("click", () => { currentPage = i; renderList(); });
+        paginationEl.appendChild(btn);
+    }
+
+    const next = document.createElement("button");
+    next.className = "page-btn";
+    next.textContent = "→";
+    next.disabled = currentPage === totalPages;
+    next.addEventListener("click", () => { currentPage++; renderList(); });
+    paginationEl.appendChild(next);
+}
