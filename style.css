@@ -1,0 +1,113 @@
+.sidebar-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+/* ── Modales via JS ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.50);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ouverture via JS : classList.remove("hidden") */
+.modal-overlay:not(.hidden) {
+    display: flex;
+}
+
+/* ── Drawer via JS ── */
+.drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.50);
+    z-index: 40;
+}
+
+.drawer-overlay:not(.hidden) {
+    display: block;
+}
+
+.drawer-overlay:not(.hidden) .drawer-panel {
+    transform: translateX(0);
+}
+
+.drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 380px;
+    max-width: 95vw;
+    background: white;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 30px rgba(0, 0, 0, 0.4);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(.4, 0, .2, 1);
+}
+
+.err {
+    display: block;
+    min-height: 16px;
+    font-size: 11px;
+    color: #dc2626;
+    margin-top: 3px;
+}
+
+/* Table row  */
+tbody tr {
+    background: #3a3a3a !important;
+}
+
+#pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding-top: 8px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d3e0;
+    background: #f7f8fc;
+    font-size: 12.5px;
+    color: #8D8E96;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: #1F1C38;
+    color: #1F1C38;
+    background: #e8e9f3;
+}
+
+.page-btn.active {
+    background: #1F1C38;
+    color: #fff;
+    border-color: #1F1C38;
+    font-weight: 500;
+}
+
+.page-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
