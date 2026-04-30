@@ -99,3 +99,18 @@ export function emailDejaUtilise(email, idExclu = null) {
     const emails = getEmailsExistants(idExclu);
     return emails.has(email.toLowerCase());
 }
+
+// AFFICHER TOUS LES ÉTUDIANTS
+
+export function afficherInscriptions(liste = etudiants) {
+    const PER_PAGE = 6;
+    const totalPages = Math.ceil(liste.length / PER_PAGE);
+    const debut = (currentPage - 1) * PER_PAGE;
+    const page = liste.slice(debut, debut + PER_PAGE);
+
+    Dom.studentsTableBody.innerHTML = "";
+    page.forEach(et => Dom.studentsTableBody.appendChild(ajouterInscription(et)));
+
+    const paginationEl = document.getElementById("pagination");
+    if (paginationEl) renderPagination(liste.length, totalPages, paginationEl, afficherInscriptions);
+}
