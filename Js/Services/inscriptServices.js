@@ -4,5 +4,3 @@ import { fermerModal } from "../UI/modalRenderer.js";
 import { showToast } from "../UI/messageRenderer.js";
 import { dateFormater } from "../Utiles/datesFormater.js";
 
-// Tableau en mémoire, initialisé depuis le localStorage
-let etudiants = getInscriptions();
