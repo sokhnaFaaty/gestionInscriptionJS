@@ -250,3 +250,4 @@ export function restaurerEtudiant(id) {
 
     afficherInscriptions();
 }
+afficherInscriptions();
