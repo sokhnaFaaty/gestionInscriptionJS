@@ -213,10 +213,10 @@ Dom.formAjouter.addEventListener("submit", function (e) {
         const newEtudiant = {
             id: Date.now(),
             nom: Dom.addNom.value.trim(),
-            prenom: telephoneSaisi,
+            prenom:Dom.addNom.value.trim() ,
             email: emailSaisi,
             adresse: Dom.addAdresse.value.trim(),
-            telephone: Dom.addTelephone.value.trim(),
+            telephone: telephoneSaisi,
             formation: Dom.addFormation.value,
             date: dateFormater()
         };
